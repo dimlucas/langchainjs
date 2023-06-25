@@ -1,5 +1,6 @@
 import { awaitAllCallbacks } from "langchain/callbacks";
 import path from "path";
+import os from "os";
 import url from "url";
 
 const [exampleName, ...args] = process.argv.slice(2);
@@ -30,10 +31,14 @@ if (exampleRelativePath.startsWith("./src/")) {
 }
 
 let runExample;
+let metaUrl = import.meta.url;
+if (os.platform() !== "win32") {
+  metaUrl = url.fileURLToPath(metaUrl);
+}
 try {
   ({ run: runExample } = await import(
     path.join(
-      path.dirname(url.fileURLToPath(import.meta.url)),
+      path.dirname(metaUrl),
       exampleRelativePath
     )
   ));
